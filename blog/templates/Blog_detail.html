@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ blog.title }}
+{% endblock %}
+
+{% block nav_blog_active %}
+    active
+{% endblock %}
+
+{% load staticfiles %}
+{% block herder_extends %}
+    <link rel="stylesheet" href="{% static 'css/blog.css' %}">
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="clo-xs-10 col-xs-offset-1">
+                <h4>{{ blog.title }}</h4>
+                <ul class="blog-info-description">
+                    <li>作者:{{ blog.author }}</li>
+                    <li>发表日期:{{ blog.created_time|date:"Y-m-d G:i:s"}}</li>    <!-- 过滤器 处理时间展示 2022年5月25日 20:47-->
+                    <li>博客类型:<a href="{% url 'Blog_with_type' blog.blog_type.id %}">{{ blog.blog_type }}</a></li>
+
+                </ul>
+
+                <div class="blog-content">{{ blog.content|safe }}</div>
+
+                <div class="blog-more">
+                        {% if previous_blog %}
+                            <a href="{% url 'Blog_detail' previous_blog.id %}">
+                                <button type="button" class="btn btn-default" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-menu-left" aria-hidden="true">上一篇:{{ previous_blog.title }}</span>
+                                </button>
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-default" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-menu-left" aria-hidden="true">当前为首篇</span>
+                            </button>
+                        {% endif %}
+
+                        {% if  next_blog %}
+                            <a href="{% url 'Blog_detail' next_blog.id %}">
+                            <button type="button" class="btn btn-default" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-menu-right" aria-hidden="true">下一篇:{{ next_blog.title }}</span>
+                            </button>
+                            </a>
+                        {% else %}
+                            <button type="button" class="btn btn-default" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-menu-right" aria-hidden="true">当前为最后一篇</span>
+                            </button>
+                        {% endif %}
+                </div>
+                <div>
+                    <a href="{% url 'Blog_list' %}">
+                        <button type="button" class="btn btn-default btn-lg">
+                            <span class="glyphicon glyphicon-menu-left" aria-hidden="true">返回上一页</span>
+                        </button>
+                    </a>
+                    <a href="{% url 'home' %}">
+                        <button type="button" class="btn btn-default btn-lg">
+                            <span class="glyphicon glyphicon-home" aria-hidden="true">返回首页</span>
+                        </button>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+{% endblock %}

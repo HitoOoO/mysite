@@ -1,0 +1,17 @@
+{% extends 'blog_list.html' %}
+
+{% block title %}
+    {{ blog_type.type_name }}
+{% endblock %}
+
+{% load staticfiles %}
+{% block herder_extends %}
+    <link rel="stylesheet" href="{% static '/css/blog.css' %}">
+{% endblock %}
+
+{% block nav_blog_active %}active{% endblock %}
+
+{% block blog_list_title %}
+    日期归档:{{ blog_with_date }}
+    <a href="{% url 'Blog_list' %}"> 点击查看全部博客</a>
+{% endblock %}

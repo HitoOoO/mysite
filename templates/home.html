@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}
+    {{ 博客首页 }}
+{% endblock %}
+    active
+{% block nav_home_active %}
+
+{% endblock %}
+
+{% block herder_extends %}
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+    <h3 class="home-content">欢迎访问我的网站</h3>
+{% endblock %}
