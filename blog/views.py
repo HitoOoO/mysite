@@ -4,6 +4,8 @@ from django.core.paginator import Paginator
 from .models import Blog,BlogType
 from django.conf import settings
 from django.db.models import Count
+
+
 def get_blog_list_common_data(request,blogs_all_list):
 
     paginator = Paginator(blogs_all_list, settings.EACH_PAGE_BLOGS_NUMBER)  # 每页显示5条,根据setting里的EACH_PAGE_BLOGS_NUMBER设置

@@ -38,7 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'blog'
+    'blog',
+    'ckeditor',  #注册富文本编辑器应用
+    'ckeditor_uploader', #注册图片上传应用
 ]
 
 MIDDLEWARE = [
@@ -137,5 +139,11 @@ STATICFILES_DIRS =[
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#media配置
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')   #文件保存路径
+
+#配置ckeditor
+CKEDITOR_UPLOAD_PATH = 'upload/'
 #自定义每页显示的数据条数
 EACH_PAGE_BLOGS_NUMBER = 5
