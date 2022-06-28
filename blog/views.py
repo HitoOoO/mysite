@@ -4,7 +4,7 @@ from django.core.paginator import Paginator
 from .models import Blog,BlogType
 from django.conf import settings
 from django.db.models import Count
-
+from datetime import datetime
 
 def get_blog_list_common_data(request,blogs_all_list):
 
@@ -83,11 +83,15 @@ class Blog_detail(View):
     def get(self,request,blog_id):
         context = {}
         blog = get_object_or_404(Blog,id=blog_id)
+        if not request.COOKIES.get('blog_{}_readed'.format(blog_id)):
+            blog.readed_num += 1   #每次打开阅读次数加1
+            blog.save()
         context['blog'] = blog
         context['previous_blog'] = Blog.objects.filter(created_time__lt=blog.created_time).last()
         context['next_blog'] = Blog.objects.filter(created_time__gt=blog.created_time).first()
-        return render_to_response(self.TEMPLATE,context)
-
+        response = render_to_response(self.TEMPLATE,context)
+        response.set_cookie('blog_{}_readed'.format(blog_id),'true')                             #max_age  多少时间过期
+        return response
 
 
 
