@@ -22,7 +22,7 @@
                     <li>作者:{{ blog.author }}</li>
                     <li>发表日期:{{ blog.created_time|date:"Y-m-d G:i:s"}}</li>    <!-- 过滤器 处理时间展示 2022年5月25日 20:47-->
                     <li>博客类型:<a href="{% url 'Blog_with_type' blog.blog_type.id %}">{{ blog.blog_type }}</a></li>
-                    <li>阅读次数({{ blog.readed_num }})</li>
+                    <li>阅读次数({{ blog.get_read_num }})</li>
 
                 </ul>
 
