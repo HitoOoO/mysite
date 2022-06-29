@@ -36,6 +36,16 @@
         {% empty %}
             <li>昨日暂无热门博客</li>
         {% endfor %}
+
+    </ul>
+     <h3>七天热门博客</h3>
+    <ul>
+        {% for hot_blog in hot_blogs_for_7_days %}
+            <li><a href="{% url 'Blog_detail' hot_blog.id %}">{{ hot_blog.title }}</a>({{ hot_blog.read_num_sum }})</li>
+        {% empty %}
+            <li>暂无热门博客</li>
+        {% endfor %}
+
     </ul>
     <script>
         // 图表配置

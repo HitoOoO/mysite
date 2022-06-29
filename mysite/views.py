@@ -1,6 +1,6 @@
 from django.views.generic import View
 from django.shortcuts import render_to_response
-from read_statistics.utils import get_seven_days_read_data,get_today_hot_data,get_yesterday_hot_data
+from read_statistics.utils import get_seven_days_read_data,get_today_hot_data,get_yesterday_hot_data,get_7_days_hot_blogs
 from django.contrib.contenttypes.models import ContentType
 from blog.models import Blog
 class Home(View):
@@ -14,4 +14,6 @@ class Home(View):
         context['dates'] = dates
         context['today_hot_data'] = get_today_hot_data(blog_content_type)
         context['yesterday_hot_data'] = get_yesterday_hot_data(blog_content_type)
+        context['hot_blogs_for_7_days'] = get_7_days_hot_blogs()
         return render_to_response(self.TEMPLATE,context)
+
