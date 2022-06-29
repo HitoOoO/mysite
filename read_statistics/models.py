@@ -18,3 +18,11 @@ class ReadNumExpandMethod():
             return readnum.read_num
         except exceptions.ObjectDoesNotExist:
             return 0
+
+class ReadDetail(models.Model):
+    #统计每天阅读数量 模型
+    date = models.DateField(default=timezone.now)
+    read_num = models.IntegerField(default=0)
+    content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING)  # 外键指向contenttype模型
+    object_id = models.PositiveIntegerField()  # 作为主键值
+    content_object = GenericForeignKey('content_type', 'object_id')
