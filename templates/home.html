@@ -21,12 +21,20 @@
     <!-- 图表容器 DOM -->
     <div id="container"></div>
     <!-- 今天24小时内热门博客 -->
-    <h3>今天热门点击</h3>
+    <h3>今天热门博客</h3>
     <ul>
         {% for hot_data in today_hot_data %}
             <li><a href="{% url 'Blog_detail' hot_data.content_object.id %}">{{ hot_data.content_object.title }}</a>({{ hot_data.read_num }})</li>
         {% empty %}
             <li>今天暂无热门博客</li>
+        {% endfor %}
+    </ul>
+    <h3>昨日热门博客</h3>
+    <ul>
+        {% for hot_data in yesterday_hot_data %}
+            <li><a href="{% url 'Blog_detail' hot_data.content_object.id %}">{{ hot_data.content_object.title }}</a>({{ hot_data.read_num }})</li>
+        {% empty %}
+            <li>昨日暂无热门博客</li>
         {% endfor %}
     </ul>
     <script>
