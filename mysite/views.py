@@ -1,9 +1,11 @@
 from django.views.generic import View
-from django.shortcuts import render_to_response
+from django.shortcuts import render,redirect
 from read_statistics.utils import get_seven_days_read_data,get_today_hot_data,get_yesterday_hot_data,get_7_days_hot_blogs
 from django.contrib.contenttypes.models import ContentType
 from blog.models import Blog
 from django.core.cache import cache
+from django.contrib.auth import authenticate,login
+
 class Home(View):
     TEMPLATE = 'home.html'
     def get(self,request):
@@ -21,5 +23,18 @@ class Home(View):
         context['today_hot_data'] = get_today_hot_data(blog_content_type)
         context['yesterday_hot_data'] = get_yesterday_hot_data(blog_content_type)
         context['hot_blogs_for_7_days'] = hot_blogs_for_7_days
-        return render_to_response(self.TEMPLATE,context)
+        return render(request,self.TEMPLATE,context)
+
+class Login(View):
+    TEMPLATE = 'error.html'
+    def post(self,request):
+        username = request.POST.get('username','')
+        password = request.POST.get('password','')
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            login(request,user)
+            return redirect('/')
+        else:
+            return render(request,self.TEMPLATE,{'message':'用户名或者密码不正确'})
+
 

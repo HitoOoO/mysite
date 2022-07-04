@@ -16,17 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from blog import urls as blog_urls
-from mysite.views import Home
+from mysite.views import Home,Login
 from django.conf import settings
 from django.conf.urls.static import static
-
+from . import views
 from blog.views import Blog_list
 urlpatterns = [
     path('',Home.as_view(),name = 'home'),
     path('admin/', admin.site.urls),
     path('blog/',include(blog_urls)),
     path('ckeditor/',include('ckeditor_uploader.urls')),
-
+    path('login/',Login.as_view(),name = 'login'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
