@@ -5,6 +5,7 @@ from django.contrib.contenttypes.models import ContentType
 from blog.models import Blog
 from django.core.cache import cache
 from django.contrib.auth import authenticate,login
+from django.urls import reverse
 
 class Home(View):
     TEMPLATE = 'home.html'
@@ -31,9 +32,10 @@ class Login(View):
         username = request.POST.get('username','')
         password = request.POST.get('password','')
         user = authenticate(username=username, password=password)
+        referer = request.META.get("HTTP_REFERER",reverse('home'))
         if user is not None:
             login(request,user)
-            return redirect('/')
+            return redirect(referer)
         else:
             return render(request,self.TEMPLATE,{'message':'用户名或者密码不正确'})
 
