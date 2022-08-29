@@ -7,7 +7,7 @@ from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
 from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
-
+from comment.forms import CommentForm
 def get_blog_list_common_data(request,blogs_all_list):
 
     paginator = Paginator(blogs_all_list, settings.EACH_PAGE_BLOGS_NUMBER)  # 每页显示5条,根据setting里的EACH_PAGE_BLOGS_NUMBER设置
@@ -93,6 +93,7 @@ class Blog_detail(View):
         context['next_blog'] = Blog.objects.filter(created_time__gt=blog.created_time).first()
         context['user'] = request.user
         context['comments'] = comments
+        context['comment_form'] = CommentForm(initial={'content_type':blog_content_type,'object_id':blog_id})
         response = render(request,self.TEMPLATE,context)
         response.set_cookie(read_cookie_key,'true')                               #max_age  多少时间过期   ,阅读cookie标记
         return response
