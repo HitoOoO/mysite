@@ -24,6 +24,7 @@ class Update_comment(View):
             data['username'] = comment.user.username
             data['comment_time'] = comment.comment_time.strftime('%Y-%m-%d %H:%M:%S')
             data['text'] = comment.text
+            data['success'] = '评论成功'
         else:
             # return render(request, 'error.html', {'message': comment_form.errors, 'redirect_to': referer})
             data['status'] = 'ERROR'

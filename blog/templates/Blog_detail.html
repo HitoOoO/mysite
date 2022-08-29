@@ -82,6 +82,7 @@
                                 {{ field|safe }}
                             {% endfor %}
                             <span id="comment_error" class="text-danger pull-left"></span>
+                            <span id="comment_success" class="text-danger pull-left"></span>
                             <input type="submit" value="评论" class="btn btn-primary pull-right" >
 
                         </form>
@@ -135,6 +136,7 @@
                             //插入数据
                             var comment_html = '<div>' + data['username'] + ' (' + data['comment_time'] + ')：' + data['text'] + '</div>';
                             $("#comment_list").prepend(comment_html);
+                            $("#comment_success").text(data['success']);
                             //清空编辑框的内容
                             CKEDITOR.instances['id_text'].setData('');
                         }
