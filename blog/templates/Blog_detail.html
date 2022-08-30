@@ -80,7 +80,7 @@
                         <form id = 'comment_form' action="{% url 'Update_comment' %}" method="POST" style="overflow: hidden">
                             <label for="comment_text">{{ user.username }}欢迎评论～</label>
                             <div id="reply_content_container" style="display:none;">
-                                <p>回复：</p>
+                                <p id = 'reply_title'>回复：</p>
                                 <div id="reply_content"></div>
                             </div>
                             {% csrf_token %}
@@ -139,7 +139,30 @@
 {% endblock %}
 {% block script_extends %}
     <script type="text/javascript">
-        $("#comment_form").submit(function (){
+        function reply(reply_comment_id){
+            //设置值
+            $('#reply_comment_id').val(reply_comment_id);
+            var html = $("#comment_" + reply_comment_id).html();
+            $('#reply_content').html(html);
+            $('#reply_content_container').show();
+            $('html').animate({scrollTop:$('#comment_form').offset().top - 60},300,function (){
+                CKEDITOR.instances['id_text'].focus();
+            });
+        }
+        function numFormat(num){
+            return ('00' + num).substr(-2);
+        }
+        function timeFormat(timestamp){
+            var datetime = new Date(timestamp * 1000);
+            var year = datetime.getFullYear();
+            var month = numFormat(datetime.getMonth() + 1);
+            var day = numFormat(datetime.getDate());
+            var hour = numFormat(datetime.getHours());
+            var minute = numFormat(datetime.getMinutes());
+            var second = numFormat(datetime.getSeconds());
+            return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second;
+        }
+        $("#comment_form").submit(function(){
                 //判断是否为空
                 $("#comment_error").text('');
                 if(CKEDITOR.instances["id_text"].document.getBody().getText().trim()==''){
@@ -159,11 +182,11 @@
                         if(data['status']=="SUCCESS"){
                             if($('#reply_comment_id').val()=='0'){
                             // 插入评论
-                                var comment_html = '<div id="root_' + data['id'] + '" class="comment"><span>' + data['username'] + '</span><span> (' + data['comment_time'] + ')：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
+                                var comment_html = '<div id="root_' + data['id'] + '" class="comment"><span>' + data['username'] + '</span><span> (' + timeFormat(data['comment_time']) + ')：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
                                 $("#comment_list").prepend(comment_html);
                             }else{
                             // 插入回复
-                                var reply_html ='<div class="reply"><span>' + data['username'] + '</span><span> (' + data['comment_time'] + ')</span><span> 回复 </span><span>' + data['reply_to'] + '：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
+                                var reply_html ='<div class="reply"><span>' + data['username'] + '</span><span> (' + timeFormat(data['comment_time']) + ')</span><span> 回复 </span><span>' + data['reply_to'] + '：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
                                 $("#root_" + data['root_id']).append(reply_html);
                             }
 
@@ -172,6 +195,7 @@
                             $('#reply_content_container').hide();
                             $('#reply_comment_id').val('0');
                             $('#no_comment').remove();
+                            $('#comment_error').text('评论成功');
                         }
                         else {
                             //显示错误信息
@@ -186,16 +210,6 @@
                 return false;
             }
         );
-        function reply(reply_comment_id){
-            //设置值
-            $('#reply_comment_id').val(reply_comment_id);
-            var html = $("#comment_" + reply_comment_id).html();
-            $('#reply_content').html(html);
-            $('#reply_content_container').show();
-            $('html').animate({scrollTop:$('#comment_form').offset().top - 60},300,function (){
-                CKEDITOR.instances['id_text'].focus();
-            });
-        }
 
     </script>
 
