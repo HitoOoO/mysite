@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% load staticfiles %}
+{% load comment_tags %}
 {% block herder_extends %}
     <link rel="stylesheet" href="{% static 'css/blog.css' %}">
     <script type="text/javascript" src="{% static "ckeditor/ckeditor-init.js" %}"></script>
@@ -25,6 +26,7 @@
                     <li>发表日期:{{ blog.created_time|date:"Y-m-d G:i:s"}}</li>    <!-- 过滤器 处理时间展示 2022年5月25日 20:47-->
                     <li>博客类型:<a href="{% url 'Blog_with_type' blog.blog_type.id %}">{{ blog.blog_type }}</a></li>
                     <li>阅读次数({{ blog.get_read_num }})</li>
+                    <li>评论次数({% get_comment_count blog %} )</li>
 
                 </ul>
 
@@ -82,6 +84,7 @@
                                 <div id="reply_content"></div>
                             </div>
                             {% csrf_token %}
+                            {% get_comment_form blog as comment_form%}
                             {% for field in comment_form %}
                                 {{ field|safe }}
                             {% endfor %}
@@ -101,6 +104,7 @@
                 <div class="comment-area">
                     <h3 class="comment-area-title">评论列表</h3>
                     <div id="comment_list">
+                         {% get_comment_list blog as comments %}
                          {% for comment in comments %}
                             <div id = "root_{{ comment.id }}" class="comment">
                                 <span>{{ comment.user.username }}</span>
