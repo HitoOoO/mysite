@@ -29,6 +29,7 @@ class Update_comment(View):
             data['username'] = comment.user.username
             data['comment_time'] = comment.comment_time.timestamp()    #strftime('%Y-%m-%d %H:%M:%S')
             data['text'] = comment.text
+            data['content_type'] = ContentType.objects.get_for_model(comment).model
             if not parent is None:
                 data['reply_to'] = comment.reply_to.username
             else:

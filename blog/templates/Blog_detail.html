@@ -154,6 +154,13 @@
 {% endblock %}
 {% block script_extends %}
     <script type="text/javascript">
+        String.prototype.format = function () {
+            var str = this;
+            for (var i = 0; i < arguments.length;i++){
+                var str = str.replace(new RegExp('\\{' + i + '\\}', 'g'), arguments[i])
+            };
+            return str;
+        }
         function reply(reply_comment_id){
             //设置值
             $('#reply_comment_id').val(reply_comment_id);
@@ -197,11 +204,34 @@
                         if(data['status']=="SUCCESS"){
                             if($('#reply_comment_id').val()=='0'){
                             // 插入评论
-                                var comment_html = '<div id="root_' + data['id'] + '" class="comment"><span>' + data['username'] + '</span><span> (' + timeFormat(data['comment_time']) + ')：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
+                                var comment_html = '<div id="root_{0}" class="comment">' +
+                                    '<span>{1}</span>' +
+                                    '<span>({2})：</span>' +
+                                    '<div id="comment_{0}">{3}</div>' +
+                                    '<div class="like" onclick="likeChange(this, \'{4}\', {0})">' +
+                                        '<span class="glyphicon glyphicon-thumbs-up"></span> ' +
+                                        '<span class="liked-num">0</span>' +
+                                    '</div>' +
+                                    '<a href="javascript:reply({0});">回复</a>' +
+                                    '</div>';
+                                comment_html = comment_html.format(data['id'], data['username'], timeFormat(data['comment_time']), data['text'], data['content_type']);
                                 $("#comment_list").prepend(comment_html);
                             }else{
                             // 插入回复
-                                var reply_html ='<div class="reply"><span>' + data['username'] + '</span><span> (' + timeFormat(data['comment_time']) + ')</span><span> 回复 </span><span>' + data['reply_to'] + '：</span><div id="comment_' + data['id'] + '">' + data['text'] + '</div><a href="javascript:reply(' + data['id'] + ');">回复</a></div>';
+                                var reply_html = '<div class="reply">' +
+                                        '<span>{1}</span>' +
+                                        '<span>({2})</span>' +
+                                        '<span>回复</span>' +
+                                        '<span>{3}：</span>' +
+                                        '<div id="comment_{0}">{4}</div>' +
+                                        '<div class="like" onclick="likeChange(this, \'{5}\', {0})">' +
+                                            '<span class="glyphicon glyphicon-thumbs-up\"></span> ' +
+                                            '<span class="liked-num">0</span>' +
+                                        '</div>' +
+                                        '<a href="javascript:reply({0});">回复</a>' +
+                                        '</div>';
+                                reply_html = reply_html.format(data['id'], data['username'], timeFormat(data['comment_time']), data['reply_to'], data['text'], data['content_type']);
+
                                 $("#root_" + data['root_id']).append(reply_html);
                             }
 
