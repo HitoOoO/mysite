@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path,include
 from blog import urls as blog_urls
 from comment import urls as comment_urls
+from likes import urls as likes_urls
 from mysite.views import Home,Login,Register
 from django.conf import settings
 from django.conf.urls.static import static
@@ -27,6 +28,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('blog/',include(blog_urls)),
     path('comment/',include(comment_urls)),
+    path('likes/',include(likes_urls)),
     path('ckeditor/',include('ckeditor_uploader.urls')),
     path('login/',Login.as_view(),name = 'login'),
     path('register/',Register.as_view(),name = 'register'),
