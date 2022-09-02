@@ -18,7 +18,7 @@ from django.urls import path,include
 from blog import urls as blog_urls
 from comment import urls as comment_urls
 from likes import urls as likes_urls
-from mysite.views import Home,Login,Register
+from mysite.views import Home,Login,Register,Login_for_modal
 from django.conf import settings
 from django.conf.urls.static import static
 from . import views
@@ -31,6 +31,7 @@ urlpatterns = [
     path('likes/',include(likes_urls)),
     path('ckeditor/',include('ckeditor_uploader.urls')),
     path('login/',Login.as_view(),name = 'login'),
+    path('login_for_modal/',Login_for_modal.as_view(),name ='login_for_modal'),
     path('register/',Register.as_view(),name = 'register'),
 
 ]

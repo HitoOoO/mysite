@@ -5,6 +5,9 @@ from .models import Blog,BlogType
 from django.conf import settings
 from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
+from mysite.forms import LoginForm
+from django.http import JsonResponse
+from django.contrib import auth
 from django.contrib.contenttypes.models import ContentType
 from comment.models import Comment
 from comment.forms import CommentForm
@@ -89,10 +92,29 @@ class Blog_detail(View):
         context['blog'] = blog
         context['previous_blog'] = Blog.objects.filter(created_time__lt=blog.created_time).last()
         context['next_blog'] = Blog.objects.filter(created_time__gt=blog.created_time).first()
+        context['login_form'] = LoginForm()
         response = render(request,self.TEMPLATE,context)
         response.set_cookie(read_cookie_key,'true')                               #max_age  多少时间过期   ,阅读cookie标记
         return response
-
+    def post(self,request,blog_id):
+        login_form = LoginForm(request.POST)
+        data = {}
+        blog = get_object_or_404(Blog, id=blog_id)
+        if login_form.is_valid():
+            user = login_form.cleaned_data['user']
+            auth.login(request,user)
+            data['status'] = 'SUCCESS'
+            data['blog'] = blog
+            data['previous_blog'] = Blog.objects.filter(created_time__lt=blog.created_time).last()
+            data['next_blog'] = Blog.objects.filter(created_time__gt=blog.created_time).first()
+            data['login_form'] = LoginForm()
+        else:
+            data['status'] = 'ERROR'
+            data['blog'] = blog
+            data['previous_blog'] = Blog.objects.filter(created_time__lt=blog.created_time).last()
+            data['next_blog'] = Blog.objects.filter(created_time__gt=blog.created_time).first()
+            data['login_form'] = LoginForm()
+        return render(request,self.TEMPLATE,data)
 
 
 

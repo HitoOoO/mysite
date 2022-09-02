@@ -8,6 +8,7 @@ from django.contrib.auth.models import User
 from django.urls import reverse
 from .forms import LoginForm, RegForm
 from django.contrib import auth
+from django.http import JsonResponse
 class Home(View):
     TEMPLATE = 'home.html'
     def get(self,request):
@@ -43,6 +44,18 @@ class Login(View):
         context = {}
         context['login_form'] = login_form
         return render(request, self.TEMPLATE, context)
+
+class Login_for_modal(View):
+    def post(self,request):
+        login_form = LoginForm(request.POST)
+        data = {}
+        if login_form.is_valid():
+            user = login_form.cleaned_data['user']
+            auth.login(request,user)
+            data['status'] = 'SUCCESS'
+        else:
+            data['status'] = 'ERROR'
+        return JsonResponse(data)
 
 class Register(View):
     TEMPLATE = 'register.html'
