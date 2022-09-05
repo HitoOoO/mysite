@@ -5,12 +5,10 @@ from .models import Blog,BlogType
 from django.conf import settings
 from django.db.models import Count
 from read_statistics.utils import read_statistics_once_read
-from mysite.forms import LoginForm
-from django.http import JsonResponse
+from user.forms import LoginForm
 from django.contrib import auth
-from django.contrib.contenttypes.models import ContentType
-from comment.models import Comment
-from comment.forms import CommentForm
+
+
 def get_blog_list_common_data(request,blogs_all_list):
 
     paginator = Paginator(blogs_all_list, settings.EACH_PAGE_BLOGS_NUMBER)  # 每页显示5条,根据setting里的EACH_PAGE_BLOGS_NUMBER设置
