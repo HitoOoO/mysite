@@ -52,7 +52,7 @@ class Register(View):
         reg_form = RegForm()
         context = {}
         context['reg_form'] = reg_form
-        return render(request, 'register.html', context)
+        return render(request, self.TEMPLATE, context)
     def post(self,request):
         reg_form = RegForm(request.POST)
         if reg_form.is_valid():
