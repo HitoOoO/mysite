@@ -26,12 +26,12 @@ class Update_comment(View):
             #返回数据
 
             data['status'] = 'SUCCESS'
-            data['username'] = comment.user.username
+            data['username'] = comment.user.get_nickname_or_username()
             data['comment_time'] = comment.comment_time.timestamp()    #strftime('%Y-%m-%d %H:%M:%S')
             data['text'] = comment.text
             data['content_type'] = ContentType.objects.get_for_model(comment).model
             if not parent is None:
-                data['reply_to'] = comment.reply_to.username
+                data['reply_to'] = comment.reply_to.get_nickname_or_username()
             else:
                 data['reply_to'] = ''
 

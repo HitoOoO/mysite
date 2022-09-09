@@ -4,10 +4,10 @@ from django.shortcuts import render,redirect
 
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .forms import LoginForm, RegForm
+from .forms import LoginForm, RegForm , ChangeNicknameForm
 from django.contrib import auth
 from django.http import JsonResponse
-
+from .models import Profile
 
 class Login(View):
     TEMPLATE = 'user/login.html'
@@ -45,7 +45,6 @@ class Login_for_modal(View):
         else:
             data['status'] = 'ERROR'
         return JsonResponse(data)
-
 class Register(View):
     TEMPLATE = 'user/register.html'
     def get(self,request):
@@ -70,3 +69,24 @@ class Register(View):
         context = {}
         context['reg_form'] = reg_form
         return render(request, self.TEMPLATE, context)
+class Change_nickname(View):
+    TEMPLATE = 'form.html'
+    def get(self,request):
+        redirect_to = request.GET.get('from', reverse('home'))
+        form = ChangeNicknameForm()
+        context = {}
+        context['page_title'] = '修改昵称'
+        context['form_title'] = '修改昵称'
+        context['submit_text'] = '修改'
+        context['form'] = form
+        context['return_back_url'] = redirect_to
+        return render(request,self.TEMPLATE,context)
+    def post(self,request):
+        redirect_to = request.GET.get('from', reverse('home'))
+        form = ChangeNicknameForm(request.POST,user=request.user)
+        if form.is_valid():
+            nickname_new = form.cleaned_data['nickname_new']
+            profile, created = Profile.objects.get_or_create(user=request.user)
+            profile.nickname = nickname_new
+            profile.save()
+            return redirect(redirect_to)
