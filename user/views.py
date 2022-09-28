@@ -55,7 +55,7 @@ class Register(View):
         context['reg_form'] = reg_form
         return render(request, self.TEMPLATE, context)
     def post(self,request):
-        reg_form = RegForm(request.POST)
+        reg_form = RegForm(request.POST,request=request)
         if reg_form.is_valid():
             username = reg_form.cleaned_data['username']
             email = reg_form.cleaned_data['email']
@@ -63,6 +63,8 @@ class Register(View):
             # 创建用户
             user = User.objects.create_user(username, email, password)
             user.save()
+            #清除session
+            del request.session['register_code']
             # 登录用户
             user = auth.authenticate(username=username, password=password)
             auth.login(request, user)
@@ -103,6 +105,8 @@ class Bind_email(View):
             email = form.cleaned_data['email']
             request.user.email = email
             request.user.save()
+            # 清除session
+            del request.session['bind_email_code']
             return redirect(redirect_to)
         context = {}
         context['page_title'] = '绑定邮箱'
@@ -126,7 +130,7 @@ class Send_verification_code(View):
 
     def get(self,request):
         email = request.GET.get('email', '')
-
+        send_for = request.GET.get('send_for','')
         data = {}
         if email != '':
             #生成验证码
@@ -136,7 +140,7 @@ class Send_verification_code(View):
             if now - send_code_time < 30:
                 data['status'] = 'ERROR'
             else:
-                request.session['bind_email_code'] = code
+                request.session[send_for] = code
                 request.session['send_code_time'] = now
                 #发送邮件
                 send_mail(
