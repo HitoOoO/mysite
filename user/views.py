@@ -3,7 +3,7 @@ from django.views.generic import View
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .forms import LoginForm, RegForm , ChangeNicknameForm , BindEmailForm
+from .forms import LoginForm, RegForm , ChangeNicknameForm , BindEmailForm , ChangePasswordForm ,ForgotPasswordForm
 from django.contrib import auth
 from django.http import JsonResponse
 from .models import Profile
@@ -154,3 +154,73 @@ class Send_verification_code(View):
         else:
             data['status'] = 'ERROR'
         return JsonResponse(data)
+
+
+class Change_password(View):
+    TEMPLATE = 'form.html'
+
+    def get(self, request):
+        redirect_to = reverse('home')
+        form = ChangePasswordForm()
+        context = {}
+        context['page_title'] = '修改密码'
+        context['form_title'] = '修改密码'
+        context['submit_text'] = '修改'
+        context['form'] = form
+        context['return_back_url'] = redirect_to
+        return render(request, self.TEMPLATE, context)
+
+    def post(self, request):
+        redirect_to = reverse('home')
+        form = ChangePasswordForm(request.POST, user=request.user)
+        context={}
+        if form.is_valid():
+            user = request.user
+            old_password = form.cleaned_data['old_password']
+            new_password = form.cleaned_data['new_password']
+            user.set_password(new_password)
+            user.save()
+            auth.logout(request)
+            return redirect(redirect_to)
+        context['page_title'] = '修改密码'
+        context['form_title'] = '修改密码'
+        context['submit_text'] = '修改'
+        context['form'] = form
+        context['return_back_url'] = redirect_to
+        return render(request, self.TEMPLATE, context)
+
+
+class Forgot_password(View):
+    TEMPLATE = 'user/forgot_password.html'
+
+
+    def post(self,request):
+        redirect_to = reverse('login')
+        form = ForgotPasswordForm(request.POST, request=request)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            new_password = form.cleaned_data['new_password']
+            user = User.objects.get(email=email)
+            user.set_password(new_password)
+            user.save()
+            # 清除session
+            del request.session['forgot_password_code']
+            return redirect(redirect_to)
+        context = {}
+        context['page_title'] = '重置密码'
+        context['form_title'] = '重置密码'
+        context['submit_text'] = '重置'
+        context['form'] = form
+        context['return_back_url'] = redirect_to
+        return render(request, self.TEMPLATE, context)
+    def get(self,request):
+        redirect_to = reverse('login')
+        form = ForgotPasswordForm()
+
+        context = {}
+        context['page_title'] = '重置密码'
+        context['form_title'] = '重置密码'
+        context['submit_text'] = '重置'
+        context['form'] = form
+        context['return_back_url'] = redirect_to
+        return render(request, self.TEMPLATE, context)
