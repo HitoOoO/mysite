@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.contrib.contenttypes.models import ContentType
 from read_statistics.models import ReadNumExpandMethod,ReadDetail
+from django.urls import reverse
 from django.contrib.contenttypes.fields import GenericRelation
 #博客类型
 class BlogType(models.Model):
@@ -24,6 +25,12 @@ class Blog(models.Model,ReadNumExpandMethod):
 
     def __str__(self):
         return '<Blog: {}>'.format(self.title)
+
+    def get_url(self):
+        return reverse('Blog_detail', kwargs={'blog_id': self.id})
+
+    def get_email(self):
+        return self.author.email
 
     #分页排序
     class Meta:

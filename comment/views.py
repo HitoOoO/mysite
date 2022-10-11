@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect,reverse
 from .models import Comment
 from django.views.generic import View
 from django.contrib.contenttypes.models import ContentType
+
 from .forms import CommentForm
 from django.http import JsonResponse
 class Update_comment(View):
@@ -23,6 +24,11 @@ class Update_comment(View):
                 comment.parent = parent
                 comment.reply_to = parent.user
             comment.save()
+
+            #发送邮件通知
+            comment.send_mail()
+
+
             #返回数据
 
             data['status'] = 'SUCCESS'
