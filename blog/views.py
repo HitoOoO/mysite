@@ -8,7 +8,6 @@ from read_statistics.utils import read_statistics_once_read
 from user.forms import LoginForm
 from django.contrib import auth
 
-
 def get_blog_list_common_data(request,blogs_all_list):
 
     paginator = Paginator(blogs_all_list, settings.EACH_PAGE_BLOGS_NUMBER)  # 每页显示5条,根据setting里的EACH_PAGE_BLOGS_NUMBER设置
